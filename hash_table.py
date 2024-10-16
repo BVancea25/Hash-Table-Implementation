@@ -1,7 +1,8 @@
 import random
 import csv
 from collections import defaultdict
-
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Load CNPs from the CSV file into a list
 cnps = []
@@ -50,7 +51,7 @@ def query_selected_cnps(selected_cnps, hash_table):
         
         for entry in hash_table[bucket]:
             iterations+=1
-            if(entry==cnp_to_find):
+            if(entry[0]==cnp_to_find):
                 found_cnps.add(cnp_to_find)
                 break
         
@@ -64,3 +65,28 @@ iterations_needed, retrieved_cnps = query_selected_cnps(selected_cnps, hash_tabl
 # Print the results
 print(f"Iterations needed to find all selected CNPs: {iterations_needed}")
 print(f"Total CNPs successfully found: {len(retrieved_cnps)}")
+
+
+
+bucket_sizes = [len(hash_table[bucket]) for bucket in hash_table]
+
+
+min_bucket_size = min(bucket_sizes)
+max_bucket_size = max(bucket_sizes)
+median_bucket_size = np.median(bucket_sizes)  # Using NumPy for median calculation
+
+# Print min, max, and median bucket sizes
+print(f"Minimum bucket size: {min_bucket_size}")
+print(f"Maximum bucket size: {max_bucket_size}")
+print(f"Median bucket size: {median_bucket_size:.2f}")
+
+plt.hist(bucket_sizes, bins=50, color='blue', edgecolor='black')
+plt.title('Distribution of Bucket Sizes')
+plt.xlabel('Bucket Size')
+plt.ylabel('Frequency')
+plt.grid(axis='y')
+plt.show()
+
+# Calculate average iterations per CNP found
+average_iterations = iterations_needed / len(retrieved_cnps)
+print(f"Average iterations per CNP found: {average_iterations:.2f}")
